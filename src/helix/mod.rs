@@ -45,7 +45,12 @@ pub mod games;
 pub mod hypetrain;
 pub mod moderation;
 pub mod points;
+#[cfg(feature = "unsupported")]
+#[cfg_attr(nightly, doc(cfg(feature = "unsupported")))]
 pub mod polls;
+#[cfg(feature = "unsupported")]
+#[cfg_attr(nightly, doc(cfg(feature = "unsupported")))]
+pub mod predictions;
 pub mod search;
 pub mod streams;
 pub mod subscriptions;
@@ -56,6 +61,7 @@ pub mod videos;
 pub mod webhooks;
 
 pub(crate) mod ser;
+pub(crate) use crate::deserialize_default_from_null;
 pub use ser::Error as SerializeError;
 
 #[doc(no_inline)]
@@ -294,14 +300,6 @@ where
         serde_json::Value::String(string) if string.is_empty() => Ok(None),
         other => Ok(serde_json::from_value(other).map_err(serde::de::Error::custom)?),
     }
-}
-
-/// Deserialize 'null' as <T as Default>::Default
-fn deserialize_default_from_null<'de, D, T>(deserializer: D) -> Result<T, D::Error>
-where
-    D: serde::Deserializer<'de>,
-    T: Deserialize<'de> + Default, {
-    Ok(Option::deserialize(deserializer)?.unwrap_or_default())
 }
 
 fn parse_json<'a, T: serde::Deserialize<'a>>(
