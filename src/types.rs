@@ -116,7 +116,7 @@ impl Serialize for BroadcasterType {
 }
 
 /// User types: "staff", "admin", "global_mod", or "".
-#[derive(PartialEq, Deserialize, Clone, Debug)]
+#[derive(PartialEq, Deserialize, Serialize, Clone, Debug)]
 pub enum UserType {
     /// Staff
     #[serde(rename = "staff")]
