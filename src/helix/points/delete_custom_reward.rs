@@ -80,6 +80,7 @@ impl std::convert::TryFrom<http::StatusCode> for DeleteCustomReward {
 
     fn try_from(s: http::StatusCode) -> Result<Self, Self::Error> {
         match s {
+            http::StatusCode::OK => Ok(DeleteCustomReward::Success),
             http::StatusCode::NO_CONTENT => Ok(DeleteCustomReward::Success),
             http::StatusCode::BAD_REQUEST => Ok(DeleteCustomReward::BadRequest),
             http::StatusCode::UNAUTHORIZED => Ok(DeleteCustomReward::AuthFailed),
