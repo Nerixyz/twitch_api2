@@ -143,7 +143,7 @@ impl RequestPost for CreateCustomRewardRequest {
         Self: Sized,
     {
         let response: helix::InnerResponse<Vec<Self::Response>> =
-            helix::parse_json(&response_str, true).map_err(|e| {
+            helix::parse_json(response_str, true).map_err(|e| {
                 helix::HelixRequestPostError::DeserializeError(
                     response_str.to_string(),
                     e,
@@ -167,6 +167,7 @@ impl RequestPost for CreateCustomRewardRequest {
     }
 }
 
+#[cfg(test)]
 #[test]
 fn test_request() {
     use helix::*;

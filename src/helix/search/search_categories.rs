@@ -84,7 +84,7 @@ impl RequestGet for SearchCategoriesRequest {
         Self: Sized,
     {
         let response: helix::InnerResponse<Option<Self::Response>> =
-            helix::parse_json(&response, true).map_err(|e| {
+            helix::parse_json(response, true).map_err(|e| {
                 helix::HelixRequestGetError::DeserializeError(
                     response.to_string(),
                     e,
@@ -104,6 +104,7 @@ impl helix::Paginated for SearchCategoriesRequest {
     fn set_pagination(&mut self, cursor: Option<helix::Cursor>) { self.after = cursor }
 }
 
+#[cfg(test)]
 #[test]
 fn test_request() {
     use helix::*;
@@ -142,6 +143,7 @@ fn test_request() {
     dbg!(SearchCategoriesRequest::parse_response(Some(req), &uri, http_response).unwrap());
 }
 
+#[cfg(test)]
 #[test]
 fn test_request_null() {
     use helix::*;

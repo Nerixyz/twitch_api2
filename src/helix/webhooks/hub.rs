@@ -24,7 +24,7 @@
 //!     .lease_seconds(864000)
 //!     .mode(hub::WebhookSubscriptionMode::Subscribe)
 //!     .secret("12233213890390".to_string())
-//!     .topic(twitch_api2::helix::webhooks::topics::users::UserFollowsTopic::builder().from_id(1336.to_string()).build())
+//!     .topic(twitch_api2::helix::webhooks::topics::users::UserFollowsTopic::builder().from_id(Some("1336".into())).build())
 //!     .build();
 //! ```
 //!
@@ -49,7 +49,7 @@
 //!     .lease_seconds(864000)
 //!     .mode(hub::WebhookSubscriptionMode::Subscribe)
 //!     .secret("12233213890390".to_string())
-//!     .topic(twitch_api2::helix::webhooks::topics::users::UserFollowsTopic::builder().from_id(1336.to_string()).build())
+//!     .topic(twitch_api2::helix::webhooks::topics::users::UserFollowsTopic::builder().from_id(Some("1336".into())).build())
 //!     .build();
 //! let response: hub::WebhookHub = client.req_post(request, body, &token).await?.data;
 //! # Ok(())
@@ -183,14 +183,14 @@ impl<T: Topic> RequestPost for WebhookHubRequest<T> {
     where
         Self: Sized,
     {
-        let text = std::str::from_utf8(&response.body()).map_err(|e| {
+        let text = std::str::from_utf8(response.body()).map_err(|e| {
             helix::HelixRequestPostError::Utf8Error(response.body().clone(), e, uri.clone())
         })?;
         if let Ok(helix::HelixRequestError {
             error,
             status,
             message,
-        }) = helix::parse_json::<helix::HelixRequestError>(&text, false)
+        }) = helix::parse_json::<helix::HelixRequestError>(text, false)
         {
             return Err(helix::HelixRequestPostError::Error {
                 error,
@@ -219,6 +219,7 @@ impl<T: Topic> RequestPost for WebhookHubRequest<T> {
     }
 }
 
+#[cfg(test)]
 #[test]
 fn test_request() {
     use helix::*;

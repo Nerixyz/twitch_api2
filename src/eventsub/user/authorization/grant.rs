@@ -1,50 +1,51 @@
-#![doc(alias = "user.authorization.revoke")]
-//! A user has revoked authorization for your client id.
+#![doc(alias = "user.authorization.grant")]
+//! A user’s authorization has been granted to your client id.
 use super::*;
-/// [`user.authorization.revoke`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types#userauthorizationrevoke): a user has revoked authorization for your client id.  Use this webhook to meet government requirements for handling user data, such as GDPR, LGPD, or CCPA.
+/// [`user.authorization.grant`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types#userauthorizationgrant): a user’s authorization has been granted to your client id.
 #[derive(Clone, Debug, typed_builder::TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "deny_unknown_fields", serde(deny_unknown_fields))]
 #[non_exhaustive]
-pub struct UserAuthorizationRevokeV1 {
+pub struct UserAuthorizationGrantV1 {
     /// Your application’s client id. The provided client_id must match the client id in the application access token
     #[builder(setter(into))]
     pub client_id: types::UserId,
 }
 
-impl EventSubscription for UserAuthorizationRevokeV1 {
-    type Payload = UserAuthorizationRevokeV1Payload;
+impl EventSubscription for UserAuthorizationGrantV1 {
+    type Payload = UserAuthorizationGrantV1Payload;
 
-    const EVENT_TYPE: EventType = EventType::UserAuthorizationRevoke;
+    const EVENT_TYPE: EventType = EventType::UserAuthorizationGrant;
     #[cfg(feature = "twitch_oauth2")]
     const SCOPE: &'static [twitch_oauth2::Scope] = &[];
     const VERSION: &'static str = "1";
 }
 
-/// [`user.authorization.revoke`](UserAuthorizationRevokeV1) response payload.
+/// [`user.authorization.grant`](UserAuthorizationGrantV1) response payload.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "deny_unknown_fields", serde(deny_unknown_fields))]
 #[non_exhaustive]
-pub struct UserAuthorizationRevokeV1Payload {
-    /// The client_id of the application with revoked user access.
+pub struct UserAuthorizationGrantV1Payload {
+    /// The client_id of the application that was granted user access.
     pub client_id: String,
-    /// The user id for the user who has revoked authorization for your client id.
+    /// The user id for the user who has granted authorization for your client id.
     pub user_id: types::UserId,
-    /// The user login for the user who has revoked authorization for your client id. This is null if the user no longer exists.
-    pub user_login: Option<types::UserName>,
-    /// The user name for the user who has revoked authorization for your client id. This is null if the user no longer exists.
-    pub user_name: Option<types::DisplayName>,
+    /// The user login for the user who has granted authorization for your client id.
+    pub user_login: types::UserName,
+    /// The user display name for the user who has granted authorization for your client id.
+    pub user_name: types::DisplayName,
 }
 
+#[cfg(test)]
 #[test]
 fn parse_payload() {
     let payload = r#"
     {
         "subscription": {
             "id": "f1c2a387-161a-49f9-a165-0f21d7a4e1c4",
-            "type": "user.authorization.revoke",
+            "type": "user.authorization.grant",
             "version": "1",
             "status": "enabled",
-            "cost": 0,
+            "cost": 1,
             "condition": {
                 "client_id": "crq72vsaoijkc83xx42hz6i37"
             },

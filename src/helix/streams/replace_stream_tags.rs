@@ -22,8 +22,8 @@
 //! # use twitch_api2::helix::streams::replace_stream_tags;
 //! let body = replace_stream_tags::ReplaceStreamTagsBody::builder()
 //!     .tag_ids(vec![
-//!         "621fb5bf-5498-4d8f-b4ac-db4d40d401bf".to_string(),
-//!         "79977fb9-f106-4a87-a386-f1b0f99783dd".to_string(),
+//!         "621fb5bf-5498-4d8f-b4ac-db4d40d401bf".into(),
+//!         "79977fb9-f106-4a87-a386-f1b0f99783dd".into(),
 //!     ])
 //!     .build();
 //! ```
@@ -47,8 +47,8 @@
 //!     .build();
 //! let body = replace_stream_tags::ReplaceStreamTagsBody::builder()
 //!     .tag_ids(vec![
-//!         "621fb5bf-5498-4d8f-b4ac-db4d40d401bf".to_string(),
-//!         "79977fb9-f106-4a87-a386-f1b0f99783dd".to_string(),
+//!         "621fb5bf-5498-4d8f-b4ac-db4d40d401bf".into(),
+//!         "79977fb9-f106-4a87-a386-f1b0f99783dd".into(),
 //!     ])
 //!     .build();
 //! let response: replace_stream_tags::ReplaceStreamTags = client.req_put(request, body, &token).await?.data;
@@ -84,7 +84,7 @@ pub struct ReplaceStreamTagsRequest {
 pub struct ReplaceStreamTagsBody {
     /// IDs of tags to be applied to the stream.
     #[builder(default, setter(into))]
-    pub tag_ids: Vec<types::CategoryId>,
+    pub tag_ids: Vec<types::TagId>,
 }
 /// Return Values for [Replace Stream Tags](super::replace_stream_tags)
 ///
@@ -135,6 +135,7 @@ impl RequestPut for ReplaceStreamTagsRequest {
     }
 }
 
+#[cfg(test)]
 #[test]
 fn test_request() {
     use helix::*;
@@ -144,8 +145,8 @@ fn test_request() {
 
     let body = ReplaceStreamTagsBody::builder()
         .tag_ids(vec![
-            "621fb5bf-5498-4d8f-b4ac-db4d40d401bf".to_string(),
-            "79977fb9-f106-4a87-a386-f1b0f99783dd".to_string(),
+            "621fb5bf-5498-4d8f-b4ac-db4d40d401bf".into(),
+            "79977fb9-f106-4a87-a386-f1b0f99783dd".into(),
         ])
         .build();
 

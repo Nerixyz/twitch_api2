@@ -32,6 +32,7 @@ pub struct UserFollowsTopic {
 #[inline(always)]
 const fn one() -> u32 { 1 }
 
+#[cfg(test)]
 #[test]
 fn test_topic() {
     use crate::helix::webhooks::hub::*;
@@ -45,7 +46,7 @@ fn test_topic() {
         .secret("12233213890390".to_string())
         .topic(
             UserFollowsTopic::builder()
-                .from_id(1336.to_string())
+                .from_id(Some("1336".into()))
                 .build(),
         )
         .build();

@@ -674,7 +674,7 @@ impl<'input, 'output> ser::Serializer for PairSerializer<'input, 'output> {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        self.urlencoder.append_pair(self.key, &variant);
+        self.urlencoder.append_pair(self.key, variant);
         Ok(self.urlencoder)
     }
 
@@ -938,6 +938,7 @@ impl ser::Serializer for ValueSerializer {
     }
 }
 
+#[cfg(test)]
 #[test]
 fn serialize_query() {
     #[derive(serde::Serialize)]
@@ -965,7 +966,7 @@ fn serialize_query() {
         filter: "1".to_string(),
         maybe: None,
         possibly: Some(("sure thing".to_string(),)),
-        ids: vec![Some("2".to_string()), Some("3".to_string())],
+        ids: vec![Some("2".into()), Some("3".into())],
         ids2: vec![4],
         stuff: (32, -35f32, "ha"),
         extras: [(1i32, "one"), (2, "two")].iter().copied().collect(),

@@ -95,7 +95,7 @@ impl RequestGet for CheckUserSubscriptionRequest {
         Self: Sized,
     {
         let inner_response: helix::InnerResponse<Vec<_>> =
-            helix::parse_json(&text, true).map_err(|e| {
+            helix::parse_json(text, true).map_err(|e| {
                 helix::HelixRequestGetError::DeserializeError(
                     text.to_string(),
                     e,
@@ -118,6 +118,7 @@ impl RequestGet for CheckUserSubscriptionRequest {
     }
 }
 
+#[cfg(test)]
 #[test]
 fn test_request1() {
     use helix::*;
@@ -152,6 +153,7 @@ fn test_request1() {
     dbg!(CheckUserSubscriptionRequest::parse_response(Some(req), &uri, http_response).unwrap());
 }
 
+#[cfg(test)]
 #[test]
 fn test_request2() {
     use helix::*;

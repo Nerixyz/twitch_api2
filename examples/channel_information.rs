@@ -31,7 +31,7 @@ async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>>
     .await
     .unwrap();
 
-    let client: HelixClient<'static, reqwest::Client> = HelixClient::new();
+    let client: HelixClient<reqwest::Client> = HelixClient::new();
 
     let user = client
         .get_user_from_login(args.next().unwrap(), &token)
@@ -39,7 +39,7 @@ async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>>
         .expect("no user found");
 
     let channel = client
-        .get_channel_from_id(&user.id, &token)
+        .get_channel_from_id(user.id.clone(), &token)
         .await?
         .expect("no channel found");
 

@@ -132,6 +132,20 @@ pub enum Payload {
     ChannelPointsCustomRewardRedemptionUpdateV1(
         NotificationPayload<channel::ChannelPointsCustomRewardRedemptionUpdateV1>,
     ),
+    /// Channel Poll Begin V1 Event
+    ChannelPollBeginV1(NotificationPayload<channel::ChannelPollBeginV1>),
+    /// Channel Poll Progress V1 Event
+    ChannelPollProgressV1(NotificationPayload<channel::ChannelPollProgressV1>),
+    /// Channel Poll End V1 Event
+    ChannelPollEndV1(NotificationPayload<channel::ChannelPollEndV1>),
+    /// Channel Prediction Begin V1 Event
+    ChannelPredictionBeginV1(NotificationPayload<channel::ChannelPredictionBeginV1>),
+    /// Channel Prediction Progress V1 Event
+    ChannelPredictionProgressV1(NotificationPayload<channel::ChannelPredictionProgressV1>),
+    /// Channel Prediction Lock V1 Event
+    ChannelPredictionLockV1(NotificationPayload<channel::ChannelPredictionLockV1>),
+    /// Channel Prediction End V1 Event
+    ChannelPredictionEndV1(NotificationPayload<channel::ChannelPredictionEndV1>),
     /// Channel Hype Train Begin V1 Event
     ChannelHypeTrainBeginV1(NotificationPayload<channel::ChannelHypeTrainBeginV1>),
     /// Channel Hype Train Progress V1 Event
@@ -144,10 +158,18 @@ pub enum Payload {
     StreamOfflineV1(NotificationPayload<stream::StreamOfflineV1>),
     /// User Update V1 Event
     UserUpdateV1(NotificationPayload<user::UserUpdateV1>),
+    /// User Authorization Grant V1 Event
+    UserAuthorizationGrantV1(NotificationPayload<user::UserAuthorizationGrantV1>),
     /// User Authorization Revoke V1 Event
     UserAuthorizationRevokeV1(NotificationPayload<user::UserAuthorizationRevokeV1>),
     /// Channel Raid V1 Event
     ChannelRaidV1(NotificationPayload<channel::ChannelRaidV1>),
+    /// Channel Subscription End V1 Event
+    ChannelSubscriptionEndV1(NotificationPayload<channel::ChannelSubscriptionEndV1>),
+    /// Channel Subscription Gift V1 Event
+    ChannelSubscriptionGiftV1(NotificationPayload<channel::ChannelSubscriptionGiftV1>),
+    /// Channel Subscription Message V1 Event
+    ChannelSubscriptionMessageV1(NotificationPayload<channel::ChannelSubscriptionMessageV1>),
 }
 
 impl Payload {
@@ -184,9 +206,9 @@ impl Payload {
             let body = request.body();
 
             let mut message = Vec::with_capacity(id.len() + timestamp.len() + body.len());
-            message.extend_from_slice(&id);
-            message.extend_from_slice(&timestamp);
-            message.extend_from_slice(&body);
+            message.extend_from_slice(id);
+            message.extend_from_slice(timestamp);
+            message.extend_from_slice(body);
 
             let signature = request
                 .headers()
@@ -334,13 +356,24 @@ impl<'de> Deserialize<'de> for Payload {
                 channel::ChannelPointsCustomRewardRemoveV1;
                 channel::ChannelPointsCustomRewardRedemptionAddV1;
                 channel::ChannelPointsCustomRewardRedemptionUpdateV1;
+                channel::ChannelPollBeginV1;
+                channel::ChannelPollProgressV1;
+                channel::ChannelPollEndV1;
+                channel::ChannelPredictionBeginV1;
+                channel::ChannelPredictionProgressV1;
+                channel::ChannelPredictionLockV1;
+                channel::ChannelPredictionEndV1;
                 channel::ChannelRaidV1;
+                channel::ChannelSubscriptionEndV1;
+                channel::ChannelSubscriptionGiftV1;
+                channel::ChannelSubscriptionMessageV1;
                 channel::ChannelHypeTrainBeginV1;
                 channel::ChannelHypeTrainProgressV1;
                 channel::ChannelHypeTrainEndV1;
                 stream::StreamOnlineV1;
                 stream::StreamOfflineV1;
                 user::UserUpdateV1;
+                user::UserAuthorizationGrantV1;
                 user::UserAuthorizationRevokeV1;
         );
 
@@ -364,13 +397,24 @@ impl<'de> Deserialize<'de> for Payload {
                 channel::ChannelPointsCustomRewardRemoveV1;
                 channel::ChannelPointsCustomRewardRedemptionAddV1;
                 channel::ChannelPointsCustomRewardRedemptionUpdateV1;
+                channel::ChannelPollBeginV1;
+                channel::ChannelPollProgressV1;
+                channel::ChannelPollEndV1;
+                channel::ChannelPredictionBeginV1;
+                channel::ChannelPredictionProgressV1;
+                channel::ChannelPredictionLockV1;
+                channel::ChannelPredictionEndV1;
                 channel::ChannelRaidV1;
+                channel::ChannelSubscriptionEndV1;
+                channel::ChannelSubscriptionGiftV1;
+                channel::ChannelSubscriptionMessageV1;
                 channel::ChannelHypeTrainBeginV1;
                 channel::ChannelHypeTrainProgressV1;
                 channel::ChannelHypeTrainEndV1;
                 stream::StreamOnlineV1;
                 stream::StreamOfflineV1;
                 user::UserUpdateV1;
+                user::UserAuthorizationGrantV1;
                 user::UserAuthorizationRevokeV1;
             }),
         }
@@ -489,9 +533,39 @@ pub enum EventType {
     /// `channel.channel_points_custom_reward_redemption.update`: a redemption of a channel points custom reward has been updated for the specified channel.
     #[serde(rename = "channel.channel_points_custom_reward_redemption.update")]
     ChannelPointsCustomRewardRedemptionUpdate,
+    /// `channel.poll.begin`: a poll begins on the specified channel.
+    #[serde(rename = "channel.poll.begin")]
+    ChannelPollBegin,
+    /// `channel.poll.progress`: a user responds to a poll on the specified channel.
+    #[serde(rename = "channel.poll.progress")]
+    ChannelPollProgress,
+    /// `channel.poll.end`: a poll ends on the specified channel.
+    #[serde(rename = "channel.poll.end")]
+    ChannelPollEnd,
+    /// `channel.prediction.begin`: a Prediction begins on the specified channel
+    #[serde(rename = "channel.prediction.begin")]
+    ChannelPredictionBegin,
+    /// `channel.prediction.progress`: a user participates in a Prediction on the specified channel.
+    #[serde(rename = "channel.prediction.progress")]
+    ChannelPredictionProgress,
+    /// `channel.prediction.lock`: a Prediction is locked on the specified channel.
+    #[serde(rename = "channel.prediction.lock")]
+    ChannelPredictionLock,
+    /// `channel.prediction.end`: a Prediction ends on the specified channel.
+    #[serde(rename = "channel.prediction.end")]
+    ChannelPredictionEnd,
     /// `channel.raid`: a broadcaster raids another broadcaster’s channel.
     #[serde(rename = "channel.raid")]
     ChannelRaid,
+    /// `channel.subscription.end`: a subscription to the specified channel expires.
+    #[serde(rename = "channel.subscription.end")]
+    ChannelSubscriptionEnd,
+    /// `channel.subscription.gift`: a user gives one or more gifted subscriptions in a channel.
+    #[serde(rename = "channel.subscription.gift")]
+    ChannelSubscriptionGift,
+    /// `channel.subscription.gift`: a user sends a resubscription chat message in a specific channel
+    #[serde(rename = "channel.subscription.message")]
+    ChannelSubscriptionMessage,
     /// `channel.hype_train.begin`: a hype train begins on the specified channel.
     #[serde(rename = "channel.hype_train.begin")]
     ChannelHypeTrainBegin,
@@ -513,6 +587,9 @@ pub enum EventType {
     /// `user.authorization.revoke`: a user has revoked authorization for your client id. Use this webhook to meet government requirements for handling user data, such as GDPR, LGPD, or CCPA.
     #[serde(rename = "user.authorization.revoke")]
     UserAuthorizationRevoke,
+    /// `user.authorization.revoke`: a user’s authorization has been granted to your client id.
+    #[serde(rename = "user.authorization.grant")]
+    UserAuthorizationGrant,
 }
 
 impl std::fmt::Display for EventType {
@@ -566,9 +643,12 @@ pub struct EventSubSubscription {
     pub version: String,
 }
 
-#[test]
-fn test_verification_response() {
-    let body = r#"{
+#[cfg(test)]
+mod test {
+
+    #[test]
+    fn test_verification_response() {
+        let body = r#"{
         "challenge": "pogchamp-kappa-360noscope-vohiyo",
         "subscription": {
             "id": "f1c2a387-161a-49f9-a165-0f21d7a4e1c4",
@@ -587,16 +667,16 @@ fn test_verification_response() {
         }
     }"#;
 
-    let val = dbg!(crate::eventsub::Payload::parse(&body).unwrap());
-    crate::tests::roundtrip(&val)
-}
+        let val = dbg!(crate::eventsub::Payload::parse(body).unwrap());
+        crate::tests::roundtrip(&val)
+    }
 
-#[test]
-fn verify_request() {
-    use http::header::{HeaderMap, HeaderName, HeaderValue};
+    #[test]
+    fn verify_request() {
+        use http::header::{HeaderMap, HeaderName, HeaderValue};
 
-    let secret = b"secretabcd";
-    #[rustfmt::skip]
+        let secret = b"secretabcd";
+        #[rustfmt::skip]
     let headers: HeaderMap = vec![
         ("Content-Length", "458"),
         ("Content-Type", "application/json"),
@@ -616,10 +696,11 @@ fn verify_request() {
         })
         .collect();
 
-    let body = r#"{"subscription":{"id":"ae2ff348-e102-16be-a3eb-6830c1bf38d2","status":"enabled","type":"channel.follow","version":"1","condition":{"broadcaster_user_id":"44429626"},"transport":{"method":"webhook","callback":"null"},"created_at":"2021-02-19T23:47:00.7621315Z"},"event":{"user_id":"28408015","user_login":"testFromUser","user_name":"testFromUser","broadcaster_user_id":"44429626","broadcaster_user_login":"44429626","broadcaster_user_name":"testBroadcaster"}}"#;
-    let mut request = http::Request::builder();
-    let _ = std::mem::replace(request.headers_mut().unwrap(), headers);
-    let request = request.body(body.as_bytes().to_vec()).unwrap();
-    dbg!(&body);
-    assert!(crate::eventsub::Payload::verify_payload(&request, secret));
+        let body = r#"{"subscription":{"id":"ae2ff348-e102-16be-a3eb-6830c1bf38d2","status":"enabled","type":"channel.follow","version":"1","condition":{"broadcaster_user_id":"44429626"},"transport":{"method":"webhook","callback":"null"},"created_at":"2021-02-19T23:47:00.7621315Z"},"event":{"user_id":"28408015","user_login":"testFromUser","user_name":"testFromUser","broadcaster_user_id":"44429626","broadcaster_user_login":"44429626","broadcaster_user_name":"testBroadcaster"}}"#;
+        let mut request = http::Request::builder();
+        let _ = std::mem::replace(request.headers_mut().unwrap(), headers);
+        let request = request.body(body.as_bytes().to_vec()).unwrap();
+        dbg!(&body);
+        assert!(crate::eventsub::Payload::verify_payload(&request, secret));
+    }
 }

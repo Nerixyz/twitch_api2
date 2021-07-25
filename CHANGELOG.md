@@ -8,21 +8,45 @@
 
 ### Added
 
-* Added Helix endpoint `Manage Held AutoMod Messages`
+* Added Helix endpoints:
+  *  `Manage Held AutoMod Messages`
+  *  `Get Global Chat Badges`
+  *  `Get Channel Chat Badges`
+  *  `Get Channel Emotes`
+  *  `Get Global Emotes`
+  *  `Get Emote Sets`
+  *  `Get Channel Stream Schedule`
+  *  `Update Channel Stream Schedule`
+  *  `Create Channel Stream Schedule Segment`
+  *  `Delete Channel Stream Schedule Segment`
 * Added Channel Terms to pubsub `chat_moderator_actions`
+* Added `user-moderation-notifications` topic to pubsub
 * Added `extendsub` to pubsub `channel-subscribe-events-v1`
 * Added `delay` to `Get Channel Information`
 * Added `serde::Serialize` to all helix endpoint return values
+* Added `channel.subscription.end` to EventSub
+* Added `channel.subscription.gift` to EventSub
+* Added `channel.subscription.message` to EventSub
+* Added `user.authorization.grant` to EventSub
+* Added `helix::make_stream` to make streams out of paginated responses.
+* Added fields `moderator_id`,`moderator_login`,`moderator_name` and `reason` to `BannedUser`
 
 ### Changed
 
 * Deprecated specific term actions in `ChatModeratorActionsReply`, replacing them with `ChannelTermsAction`
 * Deprecated `Vip` action in `ChatModeratorActionsReply`, replacing it with `VipAdded`
 * Removed some derived impls and fixed builders that assumed a default wrongly.
+* `HelixClient::new`, `TmiClient::new` and `TwitchClient::new` now give a more specified client.
+* Added total and gifter information to helix `Get Broadcaster Subscriptions`
+* Made all specific "string" types actual types with [`aliri_braid`](https://crates.io/crates/aliri_braid)
+* `HelixClient` methods `search_categories`, `search_channels`, `get_followed_streams` and `get_moderators_in_channel_from_id` now use streams to provide paginated response. 
+* Renamed `BroadcasterType::Affiliated` -> `BroadcasterType::Affiliate`
+* Client extension methods that are paginated are now paginated lazily using a stream.
 
 ### Removed
 
 * Removed enum variants for a lot of error states in helix endpoint responses. Most of these are returned by `HelixRequest_Error::Error`
+
 ## [v0.5.0] - 2021-05-08
 
 [Commits](https://github.com/Emilgardis/twitch_api2/compare/v0.4.1...v0.5.0)

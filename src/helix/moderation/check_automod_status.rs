@@ -78,7 +78,7 @@ pub struct CheckAutoModStatusRequest {
 pub struct CheckAutoModStatusBody {
     /// Developer-generated identifier for mapping messages to results.
     #[builder(setter(into))]
-    pub msg_id: String,
+    pub msg_id: types::MsgId,
     /// Message text.
     #[builder(setter(into))]
     pub msg_text: String,
@@ -89,7 +89,7 @@ pub struct CheckAutoModStatusBody {
 
 impl CheckAutoModStatusBody {
     /// Create a new [`CheckAutoModStatusBody`]
-    pub fn new(msg_id: String, msg_text: String, user_id: types::UserId) -> Self {
+    pub fn new(msg_id: types::MsgId, msg_text: String, user_id: types::UserId) -> Self {
         Self {
             msg_id,
             msg_text,
@@ -105,7 +105,7 @@ impl helix::HelixRequestBody for Vec<CheckAutoModStatusBody> {
             data: &'a Vec<CheckAutoModStatusBody>,
         }
 
-        serde_json::to_vec(&InnerBody { data: &self }).map_err(Into::into)
+        serde_json::to_vec(&InnerBody { data: self }).map_err(Into::into)
     }
 }
 
@@ -117,7 +117,7 @@ impl helix::HelixRequestBody for Vec<CheckAutoModStatusBody> {
 #[non_exhaustive]
 pub struct CheckAutoModStatus {
     /// The msg_id passed in the body of the POST message. Maps each message to its status.
-    pub msg_id: String,
+    pub msg_id: types::MsgId,
     /// Indicates if this message meets AutoMod requirements.
     pub is_permitted: bool,
 }
@@ -134,24 +134,17 @@ impl RequestPost for CheckAutoModStatusRequest {
     type Body = Vec<CheckAutoModStatusBody>;
 }
 
+#[cfg(test)]
 #[test]
 fn test_request() {
     use helix::*;
     let req = CheckAutoModStatusRequest::builder()
-        .broadcaster_id("198704263".to_string())
+        .broadcaster_id("198704263")
         .build();
 
     let body = vec![
-        CheckAutoModStatusBody::new(
-            "123".to_string(),
-            "hello world".to_string(),
-            "1234".to_string(),
-        ),
-        CheckAutoModStatusBody::new(
-            "393".to_string(),
-            "automoded word".to_string(),
-            "1234".to_string(),
-        ),
+        CheckAutoModStatusBody::new("123".into(), "hello world".to_string(), "1234".into()),
+        CheckAutoModStatusBody::new("393".into(), "automoded word".to_string(), "1234".into()),
     ];
 
     dbg!(req.create_request(body, "token", "clientid").unwrap());

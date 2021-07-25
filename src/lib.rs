@@ -3,7 +3,6 @@
 #![cfg_attr(nightly, deny(rustdoc::broken_intra_doc_links))]
 #![cfg_attr(nightly, feature(doc_cfg))]
 #![doc(html_root_url = "https://docs.rs/twitch_api2/0.5.0")]
-#![cfg_attr(all(nightly, doctest), feature(external_doc))]
 //! [![github]](https://github.com/emilgardis/twitch_api2)&ensp;[![crates-io]](https://crates.io/crates/twitch_api2)&ensp;[![docs-rs-big]](https://docs.rs/twitch_api2/0.5.0/twitch_api2)
 //!
 //! [github]: https://img.shields.io/badge/github-emilgardis/twitch__api2-8da0cb?style=for-the-badge&labelColor=555555&logo=github"
@@ -45,7 +44,7 @@
 //! # }
 //! ```
 //!
-//! There is also a convenience function for accesssing channel information with a specified login name
+//! There is also a convenience function for accessing channel information with a specified login name
 //!
 //! ```rust,no_run
 //! # use twitch_api2::{TwitchClient, helix::channels::GetChannelInformationRequest};
@@ -90,8 +89,13 @@
 //! | <span class="module-item stab portability" style="display: inline; border-radius: 3px; padding: 2px; font-size: 80%; line-height: 1.2;"><code>deny_unknown_fields</code></span> | Adds `#[serde(deny_unknown_fields)]` on all applicable structs/enums. Please consider using this and filing an issue or PR when a new field has been added to the endpoint but not added to this library. |
 //!
 
-#[doc(include = "../README.md")]
-#[cfg(all(doctest, feature = "all"))]
+// FIXME: This is a hack to prevent early pass failing on
+// `arbitrary expressions in key-value attributes are unstable` on stable rust pre 1.54.
+// Remove when MSRV 1.54 (or when  hits stable)
+// https://github.com/rust-lang/rust/issues/82768
+/// Doc test for README
+#[cfg_attr(all(doctest, nightly, feature = "all"), cfg_attr(all(doctest, nightly, feature = "all"), doc = include_str!("../README.md")))]
+#[doc(hidden)]
 pub struct ReadmeDoctests;
 
 pub mod types;
@@ -165,7 +169,7 @@ pub static TWITCH_PUBSUB_URL: &str = "wss://pubsub-edge.twitch.tv";
     nightly,
     doc(cfg(all(feature = "client", any(feature = "helix", feature = "tmi"))))
 )]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 #[non_exhaustive]
 pub struct TwitchClient<'a, C>
 where C: HttpClient<'a> {
@@ -180,15 +184,17 @@ where C: HttpClient<'a> {
 #[cfg(all(feature = "client", any(feature = "helix", feature = "tmi")))]
 impl<C: HttpClient<'static>> TwitchClient<'static, C> {
     /// Create a new [`TwitchClient`]
-    #[cfg(all(feature = "helix", feature = "tmi"))]
+    #[cfg(any(feature = "helix", feature = "tmi"))]
     pub fn new() -> TwitchClient<'static, C>
-    where C: Clone + Default {
-        let helix = HelixClient::new();
-        TwitchClient {
-            tmi: TmiClient::with_client(helix.clone_client()),
-            helix,
-        }
+    where C: Clone + client::ClientDefault<'static> {
+        let client = C::default_client();
+        Self::with_client(client)
     }
+}
+
+#[cfg(all(feature = "client", any(feature = "helix", feature = "tmi")))]
+impl<C: HttpClient<'static> + client::ClientDefault<'static>> Default for TwitchClient<'static, C> {
+    fn default() -> Self { Self::new() }
 }
 
 #[cfg(all(feature = "client", any(feature = "helix", feature = "tmi")))]
@@ -201,12 +207,12 @@ impl<'a, C: HttpClient<'a>> TwitchClient<'a, C> {
     #[cfg(any(feature = "helix", feature = "tmi"))]
     pub fn with_client(client: C) -> TwitchClient<'a, C>
     where C: Clone {
-        let helix = HelixClient::with_client(client);
+        // FIXME: This Clone is not used when only using one of the endpoints
         TwitchClient {
             #[cfg(feature = "tmi")]
-            tmi: TmiClient::with_client(helix.clone_client()),
+            tmi: TmiClient::with_client(client.clone()),
             #[cfg(feature = "helix")]
-            helix,
+            helix: HelixClient::with_client(client),
         }
     }
 }
@@ -297,6 +303,17 @@ pub fn parse_json_value<'a, T: serde::Deserialize<'a>>(
             error: e.into_inner(),
         })
     }
+}
+
+#[cfg(any(feature = "helix", feature = "pubsub"))]
+#[allow(dead_code)]
+/// Deserialize 'null' as <T as Default>::Default
+fn deserialize_default_from_null<'de, D, T>(deserializer: D) -> Result<T, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    T: serde::Deserialize<'de> + Default, {
+    use serde::Deserialize;
+    Ok(Option::deserialize(deserializer)?.unwrap_or_default())
 }
 
 #[cfg(test)]

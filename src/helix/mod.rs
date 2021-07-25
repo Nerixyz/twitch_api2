@@ -11,7 +11,7 @@
 //! # async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>> {
 //!
 //! let request = GetUsersRequest::builder()
-//!     .login(vec!["justintv123".to_string()])
+//!     .login(vec!["justintv123".into()])
 //!     .build();
 //!
 //! // Send it however you want
@@ -35,8 +35,13 @@ use twitch_oauth2::TwitchToken;
 #[cfg_attr(nightly, doc(cfg(all(feature = "client", feature = "helix"))))]
 mod client_ext;
 
+#[cfg(all(feature = "client"))]
+#[cfg_attr(nightly, doc(cfg(all(feature = "client", feature = "helix"))))]
+pub use client_ext::make_stream;
+
 pub mod bits;
 pub mod channels;
+pub mod chat;
 pub mod clips;
 #[cfg(feature = "eventsub")]
 #[cfg_attr(nightly, doc(cfg(feature = "eventsub")))]
@@ -45,6 +50,9 @@ pub mod games;
 pub mod hypetrain;
 pub mod moderation;
 pub mod points;
+pub mod polls;
+pub mod predictions;
+pub mod schedule;
 pub mod search;
 pub mod streams;
 pub mod subscriptions;
@@ -55,6 +63,7 @@ pub mod videos;
 pub mod webhooks;
 
 pub(crate) mod ser;
+pub(crate) use crate::deserialize_default_from_null;
 use crate::{parse_json, parse_json_value};
 pub use ser::Error as SerializeError;
 
@@ -131,8 +140,8 @@ impl<'a, C: crate::HttpClient<'a>> HelixClient<'a, C> {
 
     /// Create a new [`HelixClient`] with a default [`HttpClient`][crate::HttpClient]
     pub fn new() -> HelixClient<'a, C>
-    where C: Default {
-        let client = C::default();
+    where C: crate::client::ClientDefault<'a> {
+        let client = C::default_client();
         HelixClient::with_client(client)
     }
 
@@ -168,6 +177,7 @@ impl<'a, C: crate::HttpClient<'a>> HelixClient<'a, C> {
         R: Request<Response = D> + Request + RequestGet,
         D: serde::de::DeserializeOwned + PartialEq,
         T: TwitchToken + ?Sized,
+        C: Send,
     {
         let req = request.create_request(token.token().secret(), token.client_id().as_str())?;
         let uri = req.uri().clone();
@@ -274,10 +284,10 @@ impl<'a, C: crate::HttpClient<'a>> HelixClient<'a, C> {
 }
 
 #[cfg(feature = "client")]
-impl<'a, C> Default for HelixClient<'a, C>
-where C: crate::HttpClient<'a> + Default
+impl<C: crate::HttpClient<'static> + crate::client::ClientDefault<'static>> Default
+    for HelixClient<'static, C>
 {
-    fn default() -> HelixClient<'a, C> { HelixClient::new() }
+    fn default() -> Self { Self::new() }
 }
 
 /// Deserialize "" as <T as Default>::Default
@@ -290,14 +300,6 @@ where
         serde_json::Value::String(string) if string.is_empty() => Ok(None),
         other => Ok(parse_json_value(other, true).map_err(serde::de::Error::custom)?),
     }
-}
-
-/// Deserialize 'null' as <T as Default>::Default
-fn deserialize_default_from_null<'de, D, T>(deserializer: D) -> Result<T, D::Error>
-where
-    D: serde::Deserializer<'de>,
-    T: Deserialize<'de> + Default, {
-    Ok(Option::deserialize(deserializer)?.unwrap_or_default())
 }
 
 /// A request is a Twitch endpoint, see [New Twitch API](https://dev.twitch.tv/docs/api/reference) reference
@@ -382,14 +384,14 @@ pub trait RequestPost: Request {
     where
         Self: Sized,
     {
-        let text = std::str::from_utf8(&response.body()).map_err(|e| {
+        let text = std::str::from_utf8(response.body()).map_err(|e| {
             HelixRequestPostError::Utf8Error(response.body().clone(), e, uri.clone())
         })?;
         if let Ok(HelixRequestError {
             error,
             status,
             message,
-        }) = parse_json::<HelixRequestError>(&text, false)
+        }) = parse_json::<HelixRequestError>(text, false)
         {
             return Err(HelixRequestPostError::Error {
                 error,
@@ -412,7 +414,7 @@ pub trait RequestPost: Request {
     where
         Self: Sized,
     {
-        let response: InnerResponse<<Self as Request>::Response> = parse_json(&response, true)
+        let response: InnerResponse<<Self as Request>::Response> = parse_json(response, true)
             .map_err(|e| {
                 HelixRequestPostError::DeserializeError(
                     response.to_string(),
@@ -475,14 +477,14 @@ pub trait RequestPatch: Request {
     where
         Self: Sized,
     {
-        let text = std::str::from_utf8(&response.body()).map_err(|e| {
+        let text = std::str::from_utf8(response.body()).map_err(|e| {
             HelixRequestPatchError::Utf8Error(response.body().clone(), e, uri.clone())
         })?;
         if let Ok(HelixRequestError {
             error,
             status,
             message,
-        }) = parse_json::<HelixRequestError>(&text, false)
+        }) = parse_json::<HelixRequestError>(text, false)
         {
             return Err(HelixRequestPatchError::Error {
                 error,
@@ -544,14 +546,14 @@ pub trait RequestDelete: Request {
     where
         Self: Sized,
     {
-        let text = std::str::from_utf8(&response.body()).map_err(|e| {
+        let text = std::str::from_utf8(response.body()).map_err(|e| {
             HelixRequestDeleteError::Utf8Error(response.body().clone(), e, uri.clone())
         })?;
         if let Ok(HelixRequestError {
             error,
             status,
             message,
-        }) = parse_json::<HelixRequestError>(&text, false)
+        }) = parse_json::<HelixRequestError>(text, false)
         {
             return Err(HelixRequestDeleteError::Error {
                 error,
@@ -620,14 +622,14 @@ pub trait RequestPut: Request {
     where
         Self: Sized,
     {
-        let text = std::str::from_utf8(&response.body()).map_err(|e| {
+        let text = std::str::from_utf8(response.body()).map_err(|e| {
             HelixRequestPutError::Utf8Error(response.body().clone(), e, uri.clone())
         })?;
         if let Ok(HelixRequestError {
             error,
             status,
             message,
-        }) = parse_json::<HelixRequestError>(&text, false)
+        }) = parse_json::<HelixRequestError>(text, false)
         {
             return Err(HelixRequestPutError::Error {
                 error,
@@ -689,7 +691,7 @@ pub trait RequestGet: Request {
     where
         Self: Sized,
     {
-        let text = std::str::from_utf8(&response.body()).map_err(|e| {
+        let text = std::str::from_utf8(response.body()).map_err(|e| {
             HelixRequestGetError::Utf8Error(response.body().clone(), e, uri.clone())
         })?;
         //eprintln!("\n\nmessage is ------------ {} ------------", text);
@@ -697,7 +699,7 @@ pub trait RequestGet: Request {
             error,
             status,
             message,
-        }) = parse_json::<HelixRequestError>(&text, false)
+        }) = parse_json::<HelixRequestError>(text, false)
         {
             return Err(HelixRequestGetError::Error {
                 error,
@@ -792,7 +794,7 @@ where
     }
 }
 
-/// Request can be paginated with a cursor
+/// A request that can be paginated.
 pub trait Paginated: Request {
     /// Should returns the current pagination cursor.
     ///
@@ -810,7 +812,8 @@ struct Pagination {
 }
 
 /// A cursor is a pointer to the current "page" in the twitch api pagination
-pub type Cursor = String;
+#[aliri_braid::braid(serde)]
+pub struct Cursor;
 
 /// Errors for [`HelixClient::req_get`] and similar functions.
 #[derive(thiserror::Error, Debug)]

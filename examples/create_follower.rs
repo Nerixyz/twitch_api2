@@ -37,12 +37,13 @@ async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>>
     .user_id
     .unwrap();
 
-    let client = HelixClient::with_client(surf::Client::new());
+    let client: HelixClient<reqwest::Client> = HelixClient::new();
+
     for user in args {
         let user_id = match client
             .req_get(
                 twitch_api2::helix::users::GetUsersRequest::builder()
-                    .login(vec![user.to_string()])
+                    .login(vec![user.into()])
                     .build(),
                 &token,
             )

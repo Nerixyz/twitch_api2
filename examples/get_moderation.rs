@@ -1,3 +1,4 @@
+use futures::TryStreamExt;
 use twitch_api2::{
     helix::moderation::{GetBannedEventsRequest, GetBannedUsersRequest, GetModeratorEventsRequest},
     HelixClient,
@@ -34,14 +35,15 @@ async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>>
 
     let broadcaster_id = token.user_id.as_str();
 
-    let client = HelixClient::with_client(surf::Client::new());
+    let client: HelixClient<surf::Client> = HelixClient::new();
 
     println!("====Moderators====");
     println!(
         "{:?}",
         client
             .get_moderators_in_channel_from_id(broadcaster_id, &token)
-            .await?
+            .try_collect::<Vec<_>>()
+            .await?,
     );
 
     println!("====Last 20 Moderator Events====");
