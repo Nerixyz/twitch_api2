@@ -1,9 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pubsub/hypetrain.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>hypetrain.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><!-- intentional break -->
-<p class="content">This documentation was built on commit <a href="https://github.com/Emilgardis/twitch_api2/tree/b0b557fad777b3f3d9124775ba263f0854960cb9">b0b557f</a></p>
-<style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../twitch_api2/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">   1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;pubsub&#x2F;hypetrain.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>hypetrain.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><!-- intentional break -->
+<p class="content">This documentation was built on commit <a href="https://github.com/Emilgardis/twitch_api2/tree/7194ec06cc604d318622f689178fd9a25fd51b89">7194ec0</a></p>
+</head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../../twitch_api2/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../twitch_api2/index.html"><img class="rust-logo" src="../../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">   1</span>
 <span id="2">   2</span>
 <span id="3">   3</span>
 <span id="4">   4</span>
@@ -2033,14 +2032,48 @@
 <span id="2028">2028</span>
 <span id="2029">2029</span>
 <span id="2030">2030</span>
-</pre><pre class="rust">
-<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">alias</span> <span class="op">=</span> <span class="string">&quot;hype-train-events-v1&quot;</span>)]</span>
+<span id="2031">2031</span>
+<span id="2032">2032</span>
+<span id="2033">2033</span>
+<span id="2034">2034</span>
+<span id="2035">2035</span>
+<span id="2036">2036</span>
+<span id="2037">2037</span>
+<span id="2038">2038</span>
+<span id="2039">2039</span>
+<span id="2040">2040</span>
+<span id="2041">2041</span>
+<span id="2042">2042</span>
+<span id="2043">2043</span>
+<span id="2044">2044</span>
+<span id="2045">2045</span>
+<span id="2046">2046</span>
+<span id="2047">2047</span>
+<span id="2048">2048</span>
+<span id="2049">2049</span>
+<span id="2050">2050</span>
+<span id="2051">2051</span>
+<span id="2052">2052</span>
+<span id="2053">2053</span>
+<span id="2054">2054</span>
+<span id="2055">2055</span>
+<span id="2056">2056</span>
+<span id="2057">2057</span>
+<span id="2058">2058</span>
+<span id="2059">2059</span>
+<span id="2060">2060</span>
+<span id="2061">2061</span>
+<span id="2062">2062</span>
+<span id="2063">2063</span>
+<span id="2064">2064</span>
+<span id="2065">2065</span>
+</pre><pre class="rust"><code><span class="attribute">#![<span class="ident">doc</span>(<span class="ident">alias</span> <span class="op">=</span> <span class="string">&quot;hype-train-events-v1&quot;</span>)]</span>
 <span class="doccomment">//! PubSub messages for hype-trains</span>
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">pubsub</span>, <span class="ident">types</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 
 <span class="doccomment">/// A user redeems an reward using channel points.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;deny_unknown_fields&quot;</span>, <span class="ident">serde</span>(<span class="ident">deny_unknown_fields</span>))]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">into</span> <span class="op">=</span> <span class="string">&quot;String&quot;</span>, <span class="ident">try_from</span> <span class="op">=</span> <span class="string">&quot;String&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HypeTrainEventsV1</span> {
@@ -2058,11 +2091,11 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;twitch_oauth2&quot;</span>)]</span>
     <span class="kw">const</span> <span class="ident">SCOPE</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">twitch_oauth2::Scope</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[];
 
-    <span class="kw">fn</span> <span class="ident">into_topic</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">pubsub::Topics</span> { <span class="kw">super</span><span class="ident">::Topics::HypeTrainEventsV1</span>(<span class="self">self</span>) }
+    <span class="kw">fn</span> <span class="ident">into_topic</span>(<span class="self">self</span>) -&gt; <span class="ident">pubsub::Topics</span> { <span class="ident"><span class="kw">super</span>::Topics::HypeTrainEventsV1</span>(<span class="self">self</span>) }
 }
 
 <span class="doccomment">/// A user redeems an reward using channel points.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;deny_unknown_fields&quot;</span>, <span class="ident">serde</span>(<span class="ident">deny_unknown_fields</span>))]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">into</span> <span class="op">=</span> <span class="string">&quot;String&quot;</span>, <span class="ident">try_from</span> <span class="op">=</span> <span class="string">&quot;String&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HypeTrainEventsV1Rewards</span> {
@@ -2080,7 +2113,7 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;twitch_oauth2&quot;</span>)]</span>
     <span class="kw">const</span> <span class="ident">SCOPE</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">twitch_oauth2::Scope</span>] <span class="op">=</span> <span class="kw-2">&amp;</span>[];
 
-    <span class="kw">fn</span> <span class="ident">into_topic</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">pubsub::Topics</span> { <span class="kw">super</span><span class="ident">::Topics::HypeTrainEventsV1Rewards</span>(<span class="self">self</span>) }
+    <span class="kw">fn</span> <span class="ident">into_topic</span>(<span class="self">self</span>) -&gt; <span class="ident">pubsub::Topics</span> { <span class="ident"><span class="kw">super</span>::Topics::HypeTrainEventsV1Rewards</span>(<span class="self">self</span>) }
 }
 
 <span class="doccomment">/// Hype train rewards</span>
@@ -2142,6 +2175,12 @@
     <span class="kw">pub</span> <span class="ident">ending_reason</span>: <span class="ident">EndingReason</span>,
 }
 
+<span class="doccomment">/// Hype train cooldown expired</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;deny_unknown_fields&quot;</span>, <span class="ident">serde</span>(<span class="ident">deny_unknown_fields</span>))]</span>
+<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HypeTrainCooldownExpiration</span> {}
+
 <span class="doccomment">/// Hype train conductor updated</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;deny_unknown_fields&quot;</span>, <span class="ident">serde</span>(<span class="ident">deny_unknown_fields</span>))]</span>
@@ -2201,14 +2240,24 @@
     <span class="comment">// FIXME: COPIED FROM HypeTrainStart Channel ID is sometimes missing, might be depending on your token</span>
     <span class="doccomment">/// ID of channel where hype-train was initiated</span>
     <span class="kw">pub</span> <span class="ident">channel_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">types::UserId</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Creator color</span>
+    <span class="attribute">#[<span class="ident">serde</span>(
+        <span class="ident">default</span>,
+        <span class="ident">deserialize_with</span> <span class="op">=</span> <span class="string">&quot;pubsub::deserialize_none_from_empty_string&quot;</span>
+    )]</span>
+    <span class="kw">pub</span> <span class="ident">creator_color</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Participation points needed for this level</span>
     <span class="kw">pub</span> <span class="ident">goal</span>: <span class="ident">i64</span>,
+    <span class="doccomment">/// Participators</span>
+    <span class="kw">pub</span> <span class="ident">participants</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">types::UserId</span><span class="op">&gt;</span>,
     <span class="doccomment">/// remaining events</span>
     <span class="comment">// FIXME: example: &quot;1&quot;: 258708980297</span>
     <span class="comment">// What does 258708980297 stand for? is &quot;1&quot; perhaps BADGE type? just not stringified</span>
     <span class="kw">pub</span> <span class="ident">events_remaining_durations</span>: <span class="ident">std::collections::HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">i64</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Possible rewards for level one</span>
     <span class="kw">pub</span> <span class="ident">level_one_rewards</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Reward</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// ID of the approaching hype train</span>
+    <span class="kw">pub</span> <span class="ident">approaching_hype_train_id</span>: <span class="ident">types::HypeTrainId</span>,
 }
 
 <span class="doccomment">/// Reply from [HypeTrainEventsV1] or [HypeTrainEventsV1Rewards]</span>
@@ -2227,8 +2276,12 @@
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;hype-train-end&quot;</span>)]</span>
     <span class="ident">HypeTrainEnd</span>(<span class="ident">HypeTrainEnd</span>),
     <span class="doccomment">/// Hype train cooldown expired</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Note</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// There is no data associated with this event.</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;hype-train-cooldown-expiration&quot;</span>)]</span>
-    <span class="ident">HypeTrainCooldownExpiration</span>(<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>),
+    <span class="ident">HypeTrainCooldownExpiration</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HypeTrainCooldownExpiration</span><span class="op">&gt;</span>),
     <span class="doccomment">/// Hype train conductor updated</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;hype-train-conductor-update&quot;</span>)]</span>
     <span class="ident">HypeTrainConductorUpdate</span>(<span class="ident">HypeTrainConductorUpdate</span>),
@@ -2249,7 +2302,7 @@
 <span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Config</span> {
     <span class="doccomment">/// Hype train public callout emote ID</span>
-    <span class="kw">pub</span> <span class="ident">callout_emote_id</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">callout_emote_id</span>: <span class="ident">types::EmoteId</span>,
     <span class="doccomment">/// Hype train public callout emote token</span>
     <span class="kw">pub</span> <span class="ident">callout_emote_token</span>: <span class="ident">String</span>,
     <span class="comment">// FIXME: Channel ID is sometimes missing, might be depending on your token</span>
@@ -2545,23 +2598,25 @@
         <span class="doccomment">/// Group ID of emote</span>
         <span class="ident">group_id</span>: <span class="ident">String</span>,
         <span class="doccomment">/// ID of emote</span>
-        <span class="ident">id</span>: <span class="ident">String</span>,
+        <span class="ident">id</span>: <span class="ident">types::EmoteId</span>,
         <span class="doccomment">/// Level that this emote is from</span>
         <span class="ident">reward_level</span>: <span class="ident">i64</span>,
         <span class="comment">// FIXME: Token and set_id seems to only be present on hype-train-start</span>
         <span class="doccomment">/// Token for this emote</span>
         <span class="ident">token</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
         <span class="doccomment">/// ID of emote set</span>
-        <span class="ident">set_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+        <span class="ident">set_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">types::EmoteSetId</span><span class="op">&gt;</span>,
     },
     <span class="doccomment">/// Reward is a badge</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;BADGE&quot;</span>)]</span>
     <span class="ident">Badge</span> {
+        <span class="comment">// FIXME: Is this the same as in get chat badges?</span>
         <span class="doccomment">/// ID of badge</span>
-        <span class="ident">badge_id</span>: <span class="ident">String</span>,
+        <span class="ident">badge_id</span>: <span class="ident">types::ChatBadgeId</span>,
         <span class="doccomment">/// Group ID of badge</span>
         <span class="ident">group_id</span>: <span class="ident">String</span>,
-        <span class="doccomment">/// ID of badge</span>
+        <span class="comment">// FIXME: What is this?</span>
+        <span class="doccomment">/// ID of badge in this object</span>
         <span class="ident">id</span>: <span class="ident">String</span>,
         <span class="doccomment">/// URL to image of badge</span>
         <span class="ident">image_url</span>: <span class="ident">String</span>,
@@ -2618,11 +2673,11 @@
     <span class="ident">Expired</span>,
 }
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">bool_true</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> { <span class="bool-val">true</span> }
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">bool_true</span>() -&gt; <span class="ident">bool</span> { <span class="bool-val">true</span> }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw">super</span>::{<span class="ident">Response</span>, <span class="ident">TopicData</span>};
+    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span></span>::{<span class="ident">Response</span>, <span class="ident">TopicData</span>};
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -3441,11 +3496,12 @@
 {
     &quot;type&quot;: &quot;hype-train-conductor-update&quot;,
     &quot;data&quot;: {
-        &quot;source&quot;: &quot;BITS&quot;,
+        &quot;source&quot;: &quot;SUBS&quot;,
         &quot;user&quot;: {
             &quot;id&quot;: &quot;1234&quot;,
             &quot;login&quot;: &quot;tmi&quot;,
-            &quot;display_name&quot;: &quot;TMI&quot;
+            &quot;display_name&quot;: &quot;TMI&quot;,
+            &quot;profile_image_url&quot;: &quot;https://static-cdn.jtvnw.net/jtv_user_pictures/deadbeef-profile_image-50x50.png&quot;
         },
         &quot;participations&quot;: {
             &quot;BITS.CHEER&quot;: 101,
@@ -4018,7 +4074,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">hype_train_cooldown</span>() {
         <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="string">r#&quot;{&quot;type&quot;:&quot;MESSAGE&quot;,&quot;data&quot;:{&quot;topic&quot;:&quot;hype-train-events-v1.233300375&quot;,&quot;message&quot;:&quot;{\&quot;type\&quot;:\&quot;hype-train-cooldown-expiration\&quot;}&quot;}}&quot;#</span>;
-        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="macro">dbg!</span>(<span class="ident">Response::parse</span>(<span class="kw-2">&amp;</span><span class="ident">source</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="macro">dbg!</span>(<span class="ident">Response::parse</span>(<span class="ident">source</span>).<span class="ident">unwrap</span>());
         <span class="macro">assert!</span>(<span class="macro">matches!</span>(
             <span class="ident">actual</span>,
             <span class="ident">Response::Message</span> {
@@ -4029,8 +4085,20 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">hype_train_approaching</span>() {
-        <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="string">r#&quot;{&quot;type&quot;:&quot;MESSAGE&quot;,&quot;data&quot;:{&quot;topic&quot;:&quot;hype-train-events-v1.35740817&quot;,&quot;message&quot;:&quot;{\&quot;type\&quot;:\&quot;hype-train-approaching\&quot;,\&quot;data\&quot;:{\&quot;channel_id\&quot;:\&quot;35740817\&quot;,\&quot;goal\&quot;:3,\&quot;events_remaining_durations\&quot;:{\&quot;1\&quot;:258708980297},\&quot;level_one_rewards\&quot;:[{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;304420773\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;304420921\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;304420811\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;304421029\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;304420886\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;304420784\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0}]}}&quot;}}&quot;#</span>;
-        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="macro">dbg!</span>(<span class="ident">Response::parse</span>(<span class="kw-2">&amp;</span><span class="ident">source</span>).<span class="ident">unwrap</span>());
+        <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="string">r#&quot;{&quot;type&quot;:&quot;MESSAGE&quot;,&quot;data&quot;:{&quot;topic&quot;:&quot;hype-train-events-v1.1337&quot;,&quot;message&quot;:&quot;{\&quot;type\&quot;:\&quot;hype-train-approaching\&quot;,\&quot;data\&quot;:{\&quot;channel_id\&quot;:\&quot;1337\&quot;,\&quot;goal\&quot;:3,\&quot;events_remaining_durations\&quot;:{\&quot;1\&quot;:47},\&quot;level_one_rewards\&quot;:[{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;emotesv2_6d27dcab0df7442b88260a25d60bd807\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0,\&quot;set_id\&quot;:\&quot;1a8f0108-5aee-4125-8067-d39e983e934b\&quot;,\&quot;token\&quot;:\&quot;HypeCozy1\&quot;},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;emotesv2_e7a6e7e24a844e709c4d93c0845422e1\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0,\&quot;set_id\&quot;:\&quot;1a8f0108-5aee-4125-8067-d39e983e934b\&quot;,\&quot;token\&quot;:\&quot;HypeLUL\&quot;},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;emotesv2_e2a11d74a4824cbf9a8b28079e5e67dd\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0,\&quot;set_id\&quot;:\&quot;1a8f0108-5aee-4125-8067-d39e983e934b\&quot;,\&quot;token\&quot;:\&quot;HypeCool\&quot;},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;emotesv2_036fd741be4141198999b2ca4300668e\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0,\&quot;set_id\&quot;:\&quot;1a8f0108-5aee-4125-8067-d39e983e934b\&quot;,\&quot;token\&quot;:\&quot;HypeLove1\&quot;},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;emotesv2_3114c3d12dc44f53810140f632128b54\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0,\&quot;set_id\&quot;:\&quot;1a8f0108-5aee-4125-8067-d39e983e934b\&quot;,\&quot;token\&quot;:\&quot;HypeSleep\&quot;},{\&quot;type\&quot;:\&quot;EMOTE\&quot;,\&quot;id\&quot;:\&quot;emotesv2_7d457ecda087479f98501f80e23b5a04\&quot;,\&quot;group_id\&quot;:\&quot;\&quot;,\&quot;reward_level\&quot;:0,\&quot;set_id\&quot;:\&quot;1a8f0108-5aee-4125-8067-d39e983e934b\&quot;,\&quot;token\&quot;:\&quot;HypePat\&quot;}],\&quot;creator_color\&quot;:\&quot;5247FF\&quot;,\&quot;participants\&quot;:[\&quot;123\&quot;,\&quot;1234\&quot;],\&quot;approaching_hype_train_id\&quot;:\&quot;1d76561e-a477-4418-a43c-6e8f0441f8c1\&quot;}}&quot;}}&quot;#</span>;
+        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="macro">dbg!</span>(<span class="ident">Response::parse</span>(<span class="ident">source</span>).<span class="ident">unwrap</span>());
+        <span class="macro">assert!</span>(<span class="macro">matches!</span>(
+            <span class="ident">actual</span>,
+            <span class="ident">Response::Message</span> {
+                <span class="ident">data</span>: <span class="ident">TopicData::HypeTrainEventsV1</span> { .. },
+            }
+        ));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">hype_train_conductor</span>() {
+        <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="string">r#&quot;{&quot;type&quot;:&quot;MESSAGE&quot;,&quot;data&quot;:{&quot;topic&quot;:&quot;hype-train-events-v1.159498717&quot;,&quot;message&quot;:&quot;{\&quot;type\&quot;:\&quot;hype-train-conductor-update\&quot;,\&quot;data\&quot;:{\&quot;source\&quot;:\&quot;SUBS\&quot;,\&quot;user\&quot;:{\&quot;id\&quot;:\&quot;478358701\&quot;,\&quot;login\&quot;:\&quot;darkscarlatti\&quot;,\&quot;display_name\&quot;:\&quot;DarkScarlatti\&quot;,\&quot;profile_image_url\&quot;:\&quot;https://static-cdn.jtvnw.net/jtv_user_pictures/b332ddad-b1a6-42b2-ab03-ef157ab89f1c-profile_image-50x50.png\&quot;},\&quot;participations\&quot;:{\&quot;SUBS.TIER_3_SUB\&quot;:1}}}&quot;}}&quot;#</span>;
+        <span class="kw">let</span> <span class="ident">actual</span> <span class="op">=</span> <span class="macro">dbg!</span>(<span class="ident">Response::parse</span>(<span class="ident">source</span>).<span class="ident">unwrap</span>());
         <span class="macro">assert!</span>(<span class="macro">matches!</span>(
             <span class="ident">actual</span>,
             <span class="ident">Response::Message</span> {
@@ -4064,6 +4132,6 @@
         <span class="macro">assert_eq!</span>(<span class="ident">s</span>.<span class="ident">to_string</span>(), <span class="ident">right</span>);
     }
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="twitch_api2" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="twitch_api2" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0-nightly (e012a191d 2022-01-06)" ></div>
+</body></html>
